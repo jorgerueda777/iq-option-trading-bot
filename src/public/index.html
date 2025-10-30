@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IQ Option Bot - Monitor de Inversión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+        }
+        
+        .status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+        
+        .status-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            flex: 1;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .status-title {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        
+        .status-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .panel {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .panel-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .signal-item {
+            background: rgba(255,255,255,0.05);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .signal-call {
+            border-left-color: #4CAF50;
+        }
+        
+        .signal-put {
+            border-left-color: #f44336;
+        }
+        
+        .signal-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .signal-asset {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .signal-direction {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .signal-confidence {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .execution-log {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .log-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+        
+        .log-item {
+            background: rgba(255,255,255,0.05);
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .inversion-indicator {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        .original-signal, .executed-trade {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .arrow {
+            font-size: 2rem;
+            color: #feca57;
+            margin: 0 20px;
+        }
+        
+        .timestamp {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🤖 IQ Option Bot</h1>
+            <div class="subtitle">📊 Monitor de Inversión de Señales</div>
+        </div>
+        
+        <div class="inversion-indicator">
+            🔄 ESTRATEGIA DE ALTERNANCIA - Minuto IMPAR: INVERSO | Minuto PAR: IGUAL
+        </div>
+        
+        <div class="status">
+            <div class="status-card">
+                <div class="status-title">Señales Detectadas</div>
+                <div class="status-value" id="signalsCount">0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">Operaciones Ejecutadas</div>
+                <div class="status-value" id="executedCount">0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">Operaciones Activas</div>
+                <div class="status-value" id="activeCount">0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">Última Actualización</div>
+                <div class="status-value" id="lastUpdate">--:--</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="panel">
+                <div class="panel-title">🎯 Señales Detectadas</div>
+                <div id="signalsList">
+                    <div style="text-align: center; opacity: 0.6; padding: 20px;">
+                        Esperando señales...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-title">⚡ Comparación Inversión</div>
+                <div id="comparisonList">
+                    <div style="text-align: center; opacity: 0.6; padding: 20px;">
+                        Esperando ejecuciones...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="execution-log">
+            <div class="log-title">📋 Log de Ejecución</div>
+            <div id="executionLog">
+                <div class="log-item">Sistema iniciado - Esperando señales...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let signalsData = [];
+        let executedTrades = [];
+        
+        // Conectar al WebSocket
+        socket.on('connect', () => {
+            addLog('✅ Conectado al sistema de monitoreo');
+        });
+        
+        // Escuchar nuevas predicciones
+        socket.on('prediction', (prediction) => {
+            addSignal(prediction);
+            addLog(`🎯 Nueva señal: ${prediction.asset} ${prediction.direction} (${(prediction.confidence * 100).toFixed(1)}%)`);
+        });
+        
+        // Escuchar ejecuciones
+        socket.on('execution', (execution) => {
+            addExecution(execution);
+            addLog(`⚡ Ejecutado: ${execution.asset} ${execution.direction} (INVERTIDO)`);
+        });
+        
+        // Escuchar actualizaciones de estado
+        socket.on('status', (status) => {
+            updateStatus(status);
+        });
+        
+        function addSignal(prediction) {
+            signalsData.unshift(prediction);
+            if (signalsData.length > 10) signalsData.pop();
+            
+            updateSignalsList();
+            updateCounts();
+        }
+        
+        function addExecution(execution) {
+            executedTrades.unshift(execution);
+            if (executedTrades.length > 10) executedTrades.pop();
+            
+            updateComparisonList();
+            updateCounts();
+        }
+        
+        function updateSignalsList() {
+            const container = document.getElementById('signalsList');
+            if (signalsData.length === 0) {
+                container.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 20px;">Esperando señales...</div>';
+                return;
+            }
+            
+            container.innerHTML = signalsData.map(signal => `
+                <div class="signal-item signal-${signal.direction.toLowerCase()}">
+                    <div class="signal-info">
+                        <div class="signal-asset">${signal.asset}</div>
+                        <div class="signal-direction">${signal.direction} ${signal.color}</div>
+                        <div class="timestamp">${new Date(signal.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                    <div class="signal-confidence">${(signal.confidence * 100).toFixed(1)}%</div>
+                </div>
+            `).join('');
+        }
+        
+        function updateComparisonList() {
+            const container = document.getElementById('comparisonList');
+            if (executedTrades.length === 0) {
+                container.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 20px;">Esperando ejecuciones...</div>';
+                return;
+            }
+            
+            container.innerHTML = executedTrades.map(trade => {
+                const originalSignal = signalsData.find(s => s.asset === trade.asset);
+                const originalDir = originalSignal ? originalSignal.direction : 'UNKNOWN';
+                const executedDir = trade.direction;
+                
+                return `
+                    <div class="comparison">
+                        <div class="original-signal">
+                            <div><strong>Señal Original</strong></div>
+                            <div>${trade.asset}</div>
+                            <div style="color: ${originalDir === 'CALL' ? '#4CAF50' : '#f44336'}">${originalDir}</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="executed-trade">
+                            <div><strong>Ejecutado</strong></div>
+                            <div>${trade.asset}</div>
+                            <div style="color: ${executedDir === 'CALL' ? '#4CAF50' : '#f44336'}">${executedDir}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateCounts() {
+            document.getElementById('signalsCount').textContent = signalsData.length;
+            document.getElementById('executedCount').textContent = executedTrades.length;
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+        
+        function updateStatus(status) {
+            if (status.activeOperations !== undefined) {
+                document.getElementById('activeCount').textContent = status.activeOperations;
+            }
+        }
+        
+        function addLog(message) {
+            const container = document.getElementById('executionLog');
+            const logItem = document.createElement('div');
+            logItem.className = 'log-item';
+            logItem.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            
+            container.insertBefore(logItem, container.firstChild);
+            
+            // Mantener solo los últimos 20 logs
+            while (container.children.length > 20) {
+                container.removeChild(container.lastChild);
+            }
+        }
+        
+        // Actualizar cada 5 segundos
+        setInterval(() => {
+            fetch('/api/predictions')
+                .then(response => response.json())
+                .then(predictions => {
+                    // Procesar predicciones si es necesario
+                })
+                .catch(error => console.error('Error:', error));
+        }, 5000);
+    </script>
+</body>
+</html>

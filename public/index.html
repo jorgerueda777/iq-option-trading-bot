@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IQ Option AI Scanner - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Header -->
+    <header class="bg-gray-800 shadow-lg border-b border-gray-700">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="text-2xl font-bold text-blue-400">
+                        <i class="fas fa-robot mr-2"></i>
+                        IQ Option AI Scanner
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div id="connection-status" class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                            <span class="text-sm">Desconectado</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="start-scanner" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-play mr-2"></i>Iniciar Scanner
+                    </button>
+                    <button id="stop-scanner" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors" disabled>
+                        <i class="fas fa-stop mr-2"></i>Detener Scanner
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Predicciones Hoy</p>
+                        <p id="predictions-today" class="text-2xl font-bold text-blue-400">0</p>
+                    </div>
+                    <div class="text-blue-400 text-3xl">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Precisión General</p>
+                        <p id="overall-accuracy" class="text-2xl font-bold text-green-400">0%</p>
+                    </div>
+                    <div class="text-green-400 text-3xl">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Activos Activos</p>
+                        <p id="active-assets" class="text-2xl font-bold text-yellow-400">0</p>
+                    </div>
+                    <div class="text-yellow-400 text-3xl">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Tiempo Activo</p>
+                        <p id="uptime" class="text-2xl font-bold text-purple-400">00:00:00</p>
+                    </div>
+                    <div class="text-purple-400 text-3xl">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Predictions Panel -->
+            <div class="lg:col-span-2">
+                <div class="bg-gray-800 rounded-lg border border-gray-700">
+                    <div class="p-6 border-b border-gray-700">
+                        <h2 class="text-xl font-bold flex items-center">
+                            <i class="fas fa-brain mr-2 text-blue-400"></i>
+                            Predicciones en Tiempo Real
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div id="predictions-container" class="space-y-4 max-h-96 overflow-y-auto">
+                            <div class="text-center text-gray-400 py-8">
+                                <i class="fas fa-search text-4xl mb-4"></i>
+                                <p>Esperando predicciones...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Panel -->
+            <div class="space-y-6">
+                <!-- Market Data -->
+                <div class="bg-gray-800 rounded-lg border border-gray-700">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="font-bold flex items-center">
+                            <i class="fas fa-chart-candlestick mr-2 text-green-400"></i>
+                            Datos de Mercado
+                        </h3>
+                    </div>
+                    <div class="p-4">
+                        <div id="market-data" class="space-y-3">
+                            <div class="text-center text-gray-400 py-4">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <p class="text-sm">Cargando datos...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance by Hour -->
+                <div class="bg-gray-800 rounded-lg border border-gray-700">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="font-bold flex items-center">
+                            <i class="fas fa-clock mr-2 text-yellow-400"></i>
+                            Rendimiento por Hora
+                        </h3>
+                    </div>
+                    <div class="p-4">
+                        <div id="hourly-performance" class="space-y-2 max-h-64 overflow-y-auto">
+                            <!-- Hourly stats will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Status -->
+                <div class="bg-gray-800 rounded-lg border border-gray-700">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="font-bold flex items-center">
+                            <i class="fas fa-microchip mr-2 text-purple-400"></i>
+                            Estado de la IA
+                        </h3>
+                    </div>
+                    <div class="p-4">
+                        <div id="ai-status" class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Modelo:</span>
+                                <span id="model-status" class="text-green-400">Cargado</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Entrenamiento:</span>
+                                <span id="training-status" class="text-blue-400">Listo</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Confianza Promedio:</span>
+                                <span id="avg-confidence" class="text-yellow-400">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Results -->
+        <div class="mt-8">
+            <div class="bg-gray-800 rounded-lg border border-gray-700">
+                <div class="p-6 border-b border-gray-700">
+                    <h2 class="text-xl font-bold flex items-center">
+                        <i class="fas fa-history mr-2 text-green-400"></i>
+                        Resultados Recientes
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-700">
+                                    <th class="text-left py-3 px-4">Tiempo</th>
+                                    <th class="text-left py-3 px-4">Activo</th>
+                                    <th class="text-left py-3 px-4">Predicción</th>
+                                    <th class="text-left py-3 px-4">Real</th>
+                                    <th class="text-left py-3 px-4">Confianza</th>
+                                    <th class="text-left py-3 px-4">Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-table">
+                                <tr>
+                                    <td colspan="6" class="text-center text-gray-400 py-8">
+                                        <i class="fas fa-inbox text-3xl mb-2"></i>
+                                        <p>No hay resultados aún</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="fixed top-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>
+            <span id="notification-text">Notificación</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

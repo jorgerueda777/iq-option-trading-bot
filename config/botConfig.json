@@ -1,0 +1,43 @@
+{
+  "trading": {
+    "minConfidence": 75,
+    "amount": 1,
+    "maxSimultaneousOperations": 3,
+    "scanInterval": 30,
+    "operationDuration": 60,
+    "enabledAssets": [
+      "EURUSD-OTC",
+      "GBPUSD-OTC", 
+      "USDJPY-OTC",
+      "AUDUSD-OTC",
+      "USDCAD-OTC"
+    ]
+  },
+  "riskManagement": {
+    "maxDailyLoss": 50,
+    "maxDailyOperations": 20,
+    "stopLossAfterConsecutiveLosses": 3,
+    "pauseAfterLoss": 300,
+    "increaseAmountAfterWins": false
+  },
+  "schedule": {
+    "enabledHours": {
+      "start": "08:00",
+      "end": "22:00"
+    },
+    "enabledDays": [1, 2, 3, 4, 5],
+    "timezone": "America/New_York"
+  },
+  "notifications": {
+    "enableConsoleLog": true,
+    "enableFileLog": true,
+    "enableEmailAlerts": false,
+    "enableTelegramBot": false
+  },
+  "advanced": {
+    "useMultipleModels": true,
+    "requireConsensus": false,
+    "adaptiveConfidence": true,
+    "marketConditionFilter": true
+  }
+}

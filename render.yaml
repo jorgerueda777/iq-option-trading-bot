@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: iq-option-trading-bot
+    env: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TZ
+        value: America/New_York
+      - key: PORT
+        value: 3000
+    # Variables sensibles (configurar en Render dashboard)
+    # IQ_EMAIL - Email de IQ Option
+    # IQ_PASSWORD - Password de IQ Option
+    # TRADING_AMOUNT - Cantidad por operación (default: 1)
+    # MIN_CONFIDENCE - Confianza mínima (default: 50)
+    
+    # Configuración de recursos
+    disk:
+      name: bot-data
+      mountPath: /app/data
+      sizeGB: 1
+    
+    # Configuración de salud
+    healthCheckPath: /
+    
+    # Auto-deploy desde main branch
+    autoDeploy: true

@@ -1,0 +1,332 @@
+/* Custom Dashboard Styles */
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #374151;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #6B7280;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9CA3AF;
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+/* Prediction Card Styles */
+.prediction-item {
+    transition: all 0.3s ease;
+    background: #1F2937 !important;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.prediction-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Signal Buttons */
+.prediction-signal {
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    font-size: 16px !important;
+}
+
+/* Asset Names */
+.asset-name {
+    color: white !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+/* Confidence Bar */
+.confidence-bar {
+    height: 4px;
+    background: #374151;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.confidence-high { background: #10B981; }
+.confidence-medium { background: #F59E0B; }
+.confidence-low { background: #EF4444; }
+
+/* Status Indicators */
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-online { background: #10B981; }
+.status-offline { background: #EF4444; }
+.status-warning { background: #F59E0B; }
+
+/* Market Data Cards */
+.market-item {
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(55, 65, 81, 0.5);
+    border: 1px solid #374151;
+    transition: all 0.2s ease;
+}
+
+.market-item:hover {
+    background: rgba(55, 65, 81, 0.8);
+    border-color: #4B5563;
+}
+
+.price-up {
+    color: #10B981;
+}
+
+.price-down {
+    color: #EF4444;
+}
+
+.price-neutral {
+    color: #9CA3AF;
+}
+
+/* Performance Bars */
+.performance-bar {
+    height: 20px;
+    background: #374151;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.performance-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.performance-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Result Table Styles */
+.result-row {
+    transition: background-color 0.2s ease;
+}
+
+.result-row:hover {
+    background: rgba(55, 65, 81, 0.3);
+}
+
+.result-correct {
+    color: #10B981;
+}
+
+.result-incorrect {
+    color: #EF4444;
+}
+
+.result-pending {
+    color: #F59E0B;
+}
+
+/* Button Styles */
+.btn-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Loading Spinner */
+.spinner {
+    border: 2px solid #374151;
+    border-top: 2px solid #3B82F6;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Notification Styles */
+.notification-success {
+    background: #10B981;
+}
+
+.notification-error {
+    background: #EF4444;
+}
+
+.notification-warning {
+    background: #F59E0B;
+}
+
+.notification-info {
+    background: #3B82F6;
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    height: 300px;
+    background: rgba(31, 41, 55, 0.5);
+    border-radius: 8px;
+    border: 1px solid #374151;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .prediction-card {
+        margin-bottom: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+}
+
+/* Custom Tooltip */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #1F2937;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+    border: 1px solid #374151;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Asset Badge */
+.asset-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.asset-eur { background: rgba(59, 130, 246, 0.2); color: #60A5FA; }
+.asset-gbp { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+.asset-usd { background: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+.asset-jpy { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+.asset-aud { background: rgba(168, 85, 247, 0.2); color: #A78BFA; }
+.asset-cad { background: rgba(236, 72, 153, 0.2); color: #F472B6; }
+
+/* Time Badge */
+.time-badge {
+    background: rgba(55, 65, 81, 0.8);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    color: #9CA3AF;
+}
+
+/* Glow Effect */
+.glow-green {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.glow-red {
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.glow-blue {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Progress Ring */
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-circle {
+    transition: stroke-dasharray 0.35s;
+    transform-origin: 50% 50%;
+}
+
+/* Blinking Animation */
+.blink {
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
