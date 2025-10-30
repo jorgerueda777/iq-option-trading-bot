@@ -2,7 +2,7 @@
 FROM node:18-alpine
 
 # Instalar Python y dependencias del sistema
-RUN apk add --no-cache python3 py3-pip py3-venv sqlite
+RUN apk add --no-cache python3 py3-pip sqlite
 
 # Crear directorio de trabajo
 WORKDIR /app
