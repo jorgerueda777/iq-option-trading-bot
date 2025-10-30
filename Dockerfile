@@ -2,10 +2,14 @@
 FROM node:18-alpine
 
 # Instalar Python y dependencias del sistema
-RUN apk add --no-cache python3 py3-pip sqlite
+RUN apk add --no-cache python3 py3-pip py3-venv sqlite
 
 # Crear directorio de trabajo
 WORKDIR /app
+
+# Crear entorno virtual de Python y activarlo
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Copiar package.json y package-lock.json
 COPY package*.json ./
@@ -13,8 +17,8 @@ COPY package*.json ./
 # Instalar dependencias de Node.js
 RUN npm ci --only=production
 
-# Instalar dependencias de Python
-RUN pip3 install --no-cache-dir iqoptionapi requests pandas numpy
+# Instalar dependencias de Python en el entorno virtual
+RUN pip install --no-cache-dir iqoptionapi requests pandas numpy
 
 # Copiar código fuente
 COPY . .
